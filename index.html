@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مهمة فك الشفرة | حل الأنظمة الخطية</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg2: #0b1a2d;
+      --panel: rgba(10, 20, 36, 0.9);
+      --panel-2: rgba(14, 28, 49, 0.95);
+      --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --accent: #06b6d4;
+      --accent-2: #f59e0b;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --text: #e5eefc;
+      --muted: #9fb3cc;
+      --border: rgba(96, 165, 250, 0.18);
+      --gold: #f59e0b;
+      --glow: 0 0 0 1px rgba(59, 130, 246, 0.18), 0 18px 45px rgba(2, 6, 23, 0.5);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(59, 130, 246, 0.16), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.12), transparent 25%),
+        linear-gradient(135deg, var(--bg), var(--bg2));
+      min-height: 100vh;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .screen.active { display: block; }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .hero, .card, .lesson-card, .question-card, .result-card {
+      background: linear-gradient(180deg, rgba(11, 26, 45, 0.96), rgba(8, 18, 33, 0.96));
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      box-shadow: var(--glow);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero {
+      padding: 38px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(10px);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 260px;
+      height: 260px;
+      top: -90px;
+      right: -70px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.35), transparent 68%);
+    }
+
+    .hero::after {
+      width: 230px;
+      height: 230px;
+      bottom: -90px;
+      left: -70px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.22), transparent 68%);
+    }
+
+    h1, h2, h3 { margin-top: 0; }
+    h1 {
+      color: #ffffff;
+      font-size: 40px;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 18px rgba(59, 130, 246, 0.24);
+    }
+    h2 {
+      color: #eff6ff;
+      font-size: 30px;
+    }
+    h3 {
+      color: #93c5fd;
+    }
+
+    p { line-height: 1.95; }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .story {
+      background: linear-gradient(135deg, rgba(15, 32, 57, 0.95), rgba(12, 24, 41, 0.95));
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 24px 0;
+      line-height: 2;
+      text-align: right;
+      box-shadow: inset 0 0 24px rgba(59, 130, 246, 0.05);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.35);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      color: white;
+    }
+
+    .secondary {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(147, 197, 253, 0.25);
+      color: #dbeafe;
+    }
+
+    .gold {
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      color: white;
+    }
+
+    .progress {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 24px 0 10px;
+      flex-wrap: wrap;
+    }
+
+    .slot {
+      width: 78px;
+      height: 78px;
+      border-radius: 20px;
+      border: 2px dashed rgba(96, 165, 250, 0.35);
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      font-weight: 900;
+      color: #dbeafe;
+      box-shadow: inset 0 0 18px rgba(59, 130, 246, 0.06);
+    }
+
+    .slot.filled {
+      border-style: solid;
+      border-color: rgba(34, 197, 94, 0.6);
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(59, 130, 246, 0.12));
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.08), inset 0 0 24px rgba(59,130,246,0.08);
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .lesson-card, .card, .question-card, .result-card { padding: 22px; }
+
+    .tag {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.16), rgba(6, 182, 212, 0.16));
+      color: #bfdbfe;
+      border: 1px solid rgba(96, 165, 250, 0.22);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .equation {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 13px;
+      padding: 12px 14px;
+      margin: 8px 0;
+      text-align: center;
+      direction: ltr;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 17px;
+      color: #f8fafc;
+    }
+
+    .steps li, .checklist li {
+      margin-bottom: 10px;
+      line-height: 1.8;
+    }
+
+    .question-card {
+      display: none;
+      margin-top: 18px;
+      background: linear-gradient(180deg, rgba(12, 25, 43, 0.98), rgba(9, 18, 31, 0.98));
+    }
+
+    .question-card.active { display: block; }
+
+    .answers {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .answer-btn {
+      width: 100%;
+      text-align: right;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: var(--text);
+      padding: 13px 14px;
+      border-radius: 14px;
+    }
+
+    .answer-btn:hover {
+      background: rgba(59, 130, 246, 0.12);
+      border-color: rgba(96, 165, 250, 0.35);
+    }
+
+    .feedback {
+      min-height: 28px;
+      margin-top: 12px;
+      font-weight: 800;
+    }
+
+    .success { color: var(--success); }
+    .error { color: var(--danger); }
+
+    .code-line {
+      background: #020817;
+      color: #e2e8f0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-family: "Consolas", "Courier New", monospace;
+      direction: ltr;
+      text-align: left;
+      margin: 8px 0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      line-height: 1.9;
+      border: 1px solid rgba(59, 130, 246, 0.16);
+    }
+
+    .drag-wrapper {
+      display: grid;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .drop-code {
+      background: #020817;
+      color: #e2e8f0;
+      border-radius: 14px;
+      padding: 16px;
+      direction: ltr;
+      text-align: left;
+      font-family: "Consolas", "Courier New", monospace;
+      line-height: 2;
+      overflow-x: auto;
+      border: 1px solid rgba(59, 130, 246, 0.16);
+    }
+
+    .drop-slot {
+      display: inline-block;
+      min-width: 120px;
+      padding: 6px 10px;
+      margin: 0 4px;
+      border: 2px dashed rgba(96, 165, 250, 0.55);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      color: #f8fafc;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .drop-slot.filled-slot {
+      border-style: solid;
+      background: rgba(34, 197, 94, 0.14);
+      border-color: #4ade80;
+    }
+
+    .drag-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .drag-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: #eff6ff;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 800;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .drag-item.used {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .error-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .error-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      padding: 12px 14px;
+      border-radius: 14px;
+    }
+
+    .error-option input { transform: scale(1.2); }
+    .check-btn { margin-top: 14px; }
+
+    .mc-layout {
+      display: grid;
+      gap: 18px;
+    }
+
+    .q-title {
+      color: #dbeafe;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .result-card {
+      text-align: center;
+      margin-top: 26px;
+      display: none;
+      background: linear-gradient(135deg, rgba(32, 62, 25, 0.22), rgba(14, 165, 233, 0.08), rgba(245, 158, 11, 0.1));
+      border-color: rgba(74, 222, 128, 0.2);
+    }
+
+    .final-code {
+      font-size: 52px;
+      font-weight: 900;
+      letter-spacing: 8px;
+      color: #f8fafc;
+      margin: 10px 0 18px;
+      text-shadow: 0 0 20px rgba(59, 130, 246, 0.35);
+    }
+
+    .winner-name {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.12);
+      color: #fed7aa;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      margin-top: 12px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .student-badge {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(96, 165, 250, 0.22);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 800;
+      color: #dbeafe;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.24);
+    }
+
+    .input-box {
+      max-width: 420px;
+      margin: 18px auto 0;
+      text-align: right;
+    }
+
+    .name-input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(255,255,255,0.05);
+      color: #eff6ff;
+      font-size: 16px;
+      margin-top: 8px;
+      outline: none;
+    }
+
+    .name-input::placeholder { color: #91a4bd; }
+    .name-input:focus {
+      border-color: rgba(59, 130, 246, 0.55);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    }
+
+    .celebration {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 999;
+      display: none;
+    }
+
+    .confetti {
+      position: absolute;
+      top: -20px;
+      width: 12px;
+      height: 18px;
+      border-radius: 4px;
+      animation: fall 3.5s linear forwards;
+      opacity: 0.95;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0.7;
+      }
+    }
+
+    .leaderboard {
+      margin-top: 18px;
+      text-align: right;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(251, 191, 36, 0.22);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .leaderboard ol {
+      margin: 10px 0 0;
+      padding-right: 20px;
+      line-height: 2;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(96, 165, 250, 0.18);
+      color: #dbeafe;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 700px) {
+      h1 { font-size: 30px; }
+      h2 { font-size: 24px; }
+      .hero, .lesson-card, .card, .question-card, .result-card { padding: 18px; }
+      .slot { width: 64px; height: 64px; font-size: 24px; }
+      .final-code { font-size: 38px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="celebration" id="celebration"></div>
+
+  <section class="screen active" id="screen-home">
+    <div class="container">
+      <div class="hero">
+        <div class="top-bar">
+          <div class="student-badge" id="studentBadge">🎯 الطالب: لم يبدأ التحدي بعد</div>
+        </div>
+        <div class="tag">مهمة افتتاحية للحصة</div>
+        <h1>🔐 مهمة فك الشفرة</h1>
+        <p class="subtitle">الطريق الوحيد لإعادة تشغيل نظام المختبر هو استخدام لغة البايثون وفهم حل الأنظمة الخطية.</p>
+        <div class="story">
+          تعطّل نظام الذكاء الاصطناعي في مختبر البرمجة، وتوقفت الشاشات عن العمل. ترك النظام رسالة أخيرة تقول: <strong>لن تُفتح الشفرة إلا إذا فهمتم الأنظمة الخطية، والمصفوفات، والخطوات العامة للحل باستخدام Python و NumPy</strong>.<br>
+          مهمتكم اليوم: تعلّم المفاهيم، ثم فتح القفل الأول، ثم القفل الثاني، ثم القفل الأخير حتى تكتمل الشفرة النهائية.
+        </div>
+        <div class="progress">
+          <div class="slot" id="slot1">؟</div>
+          <div class="slot" id="slot2">؟</div>
+          <div class="slot" id="slot3">؟</div>
+        </div>
+        <p class="small-note">كل قفل يفتح رقمًا واحدًا من الشفرة.</p>
+        <div class="input-box">
+          <label for="studentName"><strong>أدخل اسم الطالب قبل البدء</strong></label>
+          <input type="text" id="studentName" class="name-input" placeholder="مثال: خالد" />
+        </div>
+        <div class="btn-row">
+          <button class="primary" style="font-size:20px; padding:16px 32px;" onclick="startChallenge()">🚀 ابدأ التحدي الآن</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-linear-info">
+    <div class="container">
+      <div class="card">
+        <div class="tag">المرحلة الأولى</div>
+        <h2>ما الأنظمة الخطية؟ وكيف نميزها؟</h2>
+        <p>قبل أن نفتـح أول رقم من الشفرة، يجب أن نعرف متى يكون النظام <strong>خطيًا</strong> ومتى يكون <strong>غير خطي</strong>. الفكرة الأساسية: إذا ظهرت المتغيرات بأس 1 فقط، بدون تربيع وبدون ضرب بين المتغيرات وبدون جذر، فغالبًا نحن أمام نظام خطي.</p>
+        <div class="section-grid">
+          <div class="lesson-card">
+            <h3>✅ نظام خطي</h3>
+            <div class="equation">x + 3y = 5</div>
+            <div class="equation">x - 4y = -2</div>
+            <p>المتغيرات هنا من الدرجة الأولى فقط، لذلك يمكن تمثيلها بمصفوفات وحلها باستخدام <strong>NumPy</strong>.</p>
+          </div>
+          <div class="lesson-card">
+            <h3>❌ نظام غير خطي</h3>
+            <div class="equation">x² + y = 5</div>
+            <div class="equation">xy - 2 = 7</div>
+            <p>هنا لدينا تربيع أو ضرب متغيرات، وهذا يعني أن النظام غير خطي ولا نستخدم معه نفس طريقة <strong>linalg.solve</strong>.</p>
+          </div>
+          <div class="lesson-card">
+            <h3>💡 تلميح ذكي</h3>
+            <ul class="checklist">
+              <li>وجود <strong>x²</strong> أو <strong>y²</strong> يعني غير خطي.</li>
+              <li>وجود <strong>xy</strong> يعني غير خطي.</li>
+              <li>وجود <strong>x</strong> و <strong>y</strong> فقط بأس 1 يعني خطي.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pill-list">
+          <div class="pill">علوم البيانات</div>
+          <div class="pill">الذكاء الاصطناعي</div>
+          <div class="pill">الهندسة</div>
+          <div class="pill">الاقتصاد</div>
+        </div>
+        <div class="btn-row">
+          <button class="primary" onclick="showScreen('screen-unlock-1')">Unlock First Number</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-unlock-1">
+    <div class="container">
+      <div class="card">
+        <div class="tag">القفل الأول</div>
+        <h2>افتح الرقم الأول من الشفرة</h2>
+        <p>أجب عن 3 أسئلة حول تمييز الأنظمة الخطية. يجب الإجابة الصحيحة على كل سؤال للانتقال إلى السؤال التالي.</p>
+
+        <div class="question-card active" id="u1q1">
+          <div class="q-title">السؤال 1: هل النظام التالي خطي؟</div>
+          <div class="equation">x + 2y = 7</div>
+          <div class="equation">3x - y = 4</div>
+          <div class="answers">
+            <button class="answer-btn" onclick="checkUnlock1(1, true)">نعم، نظام خطي</button>
+            <button class="answer-btn" onclick="checkUnlock1(1, false)">لا، نظام غير خطي</button>
+          </div>
+          <div class="feedback" id="u1f1"></div>
+        </div>
+
+        <div class="question-card" id="u1q2">
+          <div class="q-title">السؤال 2: هل النظام التالي خطي؟</div>
+          <div class="equation">x² + y = 6</div>
+          <div class="equation">x - y = 1</div>
+          <div class="answers">
+            <button class="answer-btn" onclick="checkUnlock1(2, false)">نعم، نظام خطي</button>
+            <button class="answer-btn" onclick="checkUnlock1(2, true)">لا، نظام غير خطي</button>
+          </div>
+          <div class="feedback" id="u1f2"></div>
+        </div>
+
+        <div class="question-card" id="u1q3">
+          <div class="q-title">السؤال 3: أي عبارة صحيحة؟</div>
+          <div class="answers">
+            <button class="answer-btn" onclick="checkUnlock1(3, true)">إذا ظهرت المتغيرات بأس 1 فقط، فالنظام خطي غالبًا</button>
+            <button class="answer-btn" onclick="checkUnlock1(3, false)">أي معادلة فيها x و y تعتبر خطية دائمًا</button>
+            <button class="answer-btn" onclick="checkUnlock1(3, false)">وجود xy لا يؤثر على نوع النظام</button>
+          </div>
+          <div class="feedback" id="u1f3"></div>
+        </div>
+
+        <div class="result-card" id="unlock1-result">
+          <h3>🎉 تم فتح القفل الأول</h3>
+          <p>أحسنت! حصلت على الرقم الأول من الشفرة.</p>
+          <div class="final-code">2</div>
+          <button class="primary" onclick="showScreen('screen-general-rule')">الانتقال إلى القاعدة العامة</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-general-rule">
+    <div class="container">
+      <div class="card">
+        <div class="tag">المرحلة الثانية</div>
+        <h2>القاعدة العامة لحل الأنظمة الخطية باستخدام بايثون</h2>
+        <p>بعد أن عرفنا متى يكون النظام خطيًا، ننتقل الآن إلى الخطوات العامة للحل في لغة البايثون باستخدام مكتبة <strong>NumPy</strong>.</p>
+        <div class="section-grid">
+          <div class="lesson-card">
+            <h3>1) استدعاء المكتبة</h3>
+            <div class="code-line">import numpy as np</div>
+            <p>نستدعي المكتبة بالاختصار <strong>np</strong> لتسهيل كتابة الأوامر.</p>
+          </div>
+          <div class="lesson-card">
+            <h3>2) مصفوفة المعاملات</h3>
+            <div class="equation">x + 3y = 5</div>
+            <div class="equation">x - 4y = -2</div>
+            <div class="code-line">coef = np.array([[1, 3], [1, -4]])</div>
+            <p>نأخذ معاملات <strong>x</strong> و <strong>y</strong> فقط ونرتبها حسب كل معادلة.</p>
+          </div>
+          <div class="lesson-card">
+            <h3>3) مصفوفة الثوابت</h3>
+            <div class="code-line">cons = np.array([5, -2])</div>
+            <p>نكتب الأعداد الموجودة في الطرف الآخر من المعادلتين.</p>
+          </div>
+          <div class="lesson-card">
+            <h3>4) إيجاد الحل</h3>
+            <div class="code-line">sol = np.linalg.solve(coef, cons)</div>
+            <p>نستخدم <strong>linalg.solve</strong> لإيجاد قيم المتغيرات.</p>
+          </div>
+          <div class="lesson-card">
+            <h3>5) طباعة الحل</h3>
+            <div class="code-line">print(sol)</div>
+            <p>في النهاية نطبع الناتج لمعرفة قيمة كل متغير.</p>
+          </div>
+          <div class="lesson-card">
+            <h3>الكود كاملًا</h3>
+            <div class="code-line">import numpy as np
+coef = np.array([[1, 3], [1, -4]])
+cons = np.array([5, -2])
+sol = np.linalg.solve(coef, cons)
+print(sol)</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="primary" onclick="showScreen('screen-unlock-2')">Unlock Second Number</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-unlock-2">
+    <div class="container">
+      <div class="card">
+        <div class="tag">القفل الثاني</div>
+        <h2>اختياري من متعدد</h2>
+        <p>أجب عن أسئلة القاعدة العامة للحل. يجب الحصول على الإجابة الصحيحة في كل بطاقة.</p>
+        <div class="mc-layout">
+          <div class="question-card active" id="u2q1">
+            <div class="q-title">1) ما الطريقة الصحيحة لتحديد مصفوفة الثوابت للنظام التالي؟</div>
+            <div class="equation">x + 3y = 5</div>
+            <div class="equation">x - 4y = -2</div>
+            <div class="answers">
+              <button class="answer-btn" onclick="checkUnlock2(1, false)">np.array([1, -4])</button>
+              <button class="answer-btn" onclick="checkUnlock2(1, false)">np.array([5, 2])</button>
+              <button class="answer-btn" onclick="checkUnlock2(1, true)">np.array([5, -2])</button>
+              <button class="answer-btn" onclick="checkUnlock2(1, false)">np.array([1, 3])</button>
+            </div>
+            <div class="feedback" id="u2f1"></div>
+          </div>
+
+          <div class="question-card" id="u2q2">
+            <div class="q-title">2) ما الطريقة الصحيحة لكتابة مصفوفة المعاملات للمعادلة الخطية؟</div>
+            <div class="equation">15x + 4y = 10</div>
+            <div class="answers">
+              <button class="answer-btn" onclick="checkUnlock2(2, false)">np.array([10, 3])</button>
+              <button class="answer-btn" onclick="checkUnlock2(2, false)">np.array([4, 15])</button>
+              <button class="answer-btn" onclick="checkUnlock2(2, true)">np.array([15, 4])</button>
+              <button class="answer-btn" onclick="checkUnlock2(2, false)">np.array([-15, 4])</button>
+            </div>
+            <div class="feedback" id="u2f2"></div>
+          </div>
+
+          <div class="question-card" id="u2q3">
+            <div class="q-title">3) ما الطريقة الصحيحة لاستدعاء مكتبة NumPy واختصارها باسم np؟</div>
+            <div class="answers">
+              <button class="answer-btn" onclick="checkUnlock2(3, true)">import numpy as np</button>
+              <button class="answer-btn" onclick="checkUnlock2(3, false)">import p as numpy</button>
+              <button class="answer-btn" onclick="checkUnlock2(3, false)">import numpy as p</button>
+              <button class="answer-btn" onclick="checkUnlock2(3, false)">from numpy import p</button>
+            </div>
+            <div class="feedback" id="u2f3"></div>
+          </div>
+        </div>
+
+        <div class="result-card" id="unlock2-result">
+          <h3>✨ ممتاز</h3>
+          <p>تم فتح القفل الثاني، وهذا هو الرقم الثاني من الشفرة.</p>
+          <div class="final-code">7</div>
+          <button class="primary" onclick="showScreen('screen-unlock-3')">الانتقال إلى القفل الأخير</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-unlock-3">
+    <div class="container">
+      <div class="card">
+        <div class="tag">القفل الأخير</div>
+        <h2>أكمل الفراغ وصحح الخطأ</h2>
+        <p>هذه المرحلة الأخيرة قبل ظهور الشفرة النهائية. أجب عن التحديات التالية بدقة.</p>
+
+        <div class="question-card active" id="u3q1">
+          <div class="q-title">السؤال 1: أكمل الفراغات بالسحب والإفلات لتكوين الكود الصحيح</div>
+          <div class="equation">3x + y = 5</div>
+          <div class="equation">x + 2y = 4</div>
+          <div class="drag-wrapper">
+            <div class="drop-code">coef = np.array(<span class="drop-slot" data-group="q1" data-accept="[[3, 1], [1, 2]]">اسحب هنا</span>)
+cons = np.array(<span class="drop-slot" data-group="q1" data-accept="[5, 4]">اسحب هنا</span>)</div>
+            <div class="drag-bank" id="bank-q1">
+              <div class="drag-item" draggable="true" data-group="q1" data-value="[[3, 1], [1, 2]]">[[3, 1], [1, 2]]</div>
+              <div class="drag-item" draggable="true" data-group="q1" data-value="[5, 4]">[5, 4]</div>
+              <div class="drag-item" draggable="true" data-group="q1" data-value="[[5, 4], [3, 1]]">[[5, 4], [3, 1]]</div>
+              <div class="drag-item" draggable="true" data-group="q1" data-value="[1, 2]">[1, 2]</div>
+              <div class="drag-item" draggable="true" data-group="q1" data-value="[3, 1]">[3, 1]</div>
+            </div>
+            <div class="btn-row">
+              <button class="secondary" onclick="resetDragGroup('q1')">إعادة ترتيب الإجابات</button>
+            </div>
+            <button class="primary check-btn" onclick="checkDragQuestion1()">تحقق من الإجابة</button>
+          </div>
+          <div class="feedback" id="u3f1"></div>
+        </div>
+
+        <div class="question-card" id="u3q2">
+          <div class="q-title">السؤال 2: أكمل الفراغات بالسحب والإفلات لاختيار سطر الحل الصحيح</div>
+          <div class="drag-wrapper">
+            <div class="drop-code">sol = <span class="drop-slot" data-group="q2" data-accept="np.linalg.solve">اسحب هنا</span>(<span class="drop-slot" data-group="q2" data-accept="coef, cons">اسحب هنا</span>)</div>
+            <div class="drag-bank" id="bank-q2">
+              <div class="drag-item" draggable="true" data-group="q2" data-value="np.linalg.solve">np.linalg.solve</div>
+              <div class="drag-item" draggable="true" data-group="q2" data-value="coef, cons">coef, cons</div>
+              <div class="drag-item" draggable="true" data-group="q2" data-value="np.solve">np.solve</div>
+              <div class="drag-item" draggable="true" data-group="q2" data-value="cons, coef">cons, coef</div>
+              <div class="drag-item" draggable="true" data-group="q2" data-value="np.array.solve">np.array.solve</div>
+            </div>
+            <div class="btn-row">
+              <button class="secondary" onclick="resetDragGroup('q2')">إعادة ترتيب الإجابات</button>
+            </div>
+            <button class="primary check-btn" onclick="checkDragQuestion2()">تحقق من الإجابة</button>
+          </div>
+          <div class="feedback" id="u3f2"></div>
+        </div>
+
+        <div class="question-card" id="u3q3">
+          <div class="q-title">السؤال 3: حدد كل الأخطاء الموجودة في البرنامج التالي</div>
+          <div class="code-line">import numpy as x
+coef = np.Array([[1, 4], [103, 32]])
+cons = np.array([1, -1])
+result = np.linalg.solve(cons, coef)
+print(result)</div>
+          <div class="error-list">
+            <label class="error-option"><input type="checkbox" id="err1"> يجب أن يكون الاستدعاء: import numpy as np وليس import numpy as x</label>
+            <label class="error-option"><input type="checkbox" id="err2"> يجب أن تكون الدالة np.array وليس np.Array</label>
+            <label class="error-option"><input type="checkbox" id="err3"> ترتيب الوسائط في solve غير صحيح، والصحيح هو (coef, cons)</label>
+            <label class="error-option"><input type="checkbox" id="err4"> يجب حذف سطر print(result)</label>
+            <label class="error-option"><input type="checkbox" id="err5"> يجب تغيير cons إلى coef فقط</label>
+          </div>
+          <button class="primary check-btn" onclick="checkMultiErrorQuestion()">تحقق من الإجابات</button>
+          <div class="feedback" id="u3f3"></div>
+        </div>
+
+        <div class="result-card" id="final-result">
+          <h2>🏆 تم فك الشفرة بنجاح</h2>
+          <p>أحسنت! لقد اجتزت جميع المراحل وأعدت تشغيل نظام المختبر.</p>
+          <div class="final-code">273</div>
+          <div class="winner-name">اسم الجائزة: جائزة بطل الشفرة</div>
+          <p class="small-note">أول طالب يصل إلى الشفرة النهائية يفوز بـ <strong>جائزة بطل الشفرة</strong>.</p>
+          <div class="leaderboard">
+            <strong>🏆 لوحة الفائز بجائزة بطل الشفرة</strong>
+            <ol id="winnerBoard">
+              <li>بانتظار أول فائز...</li>
+            </ol>
+          </div>
+          <div class="btn-row">
+            <button class="gold" onclick="restartAll()">إعادة التحدي</button>
+            <button class="secondary" onclick="showScreen('screen-home')">العودة للبداية</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let currentStudent = '';
+    let winners = [];
+    let draggedItem = null;
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+      const nextScreen = document.getElementById(id);
+      if (nextScreen) {
+        nextScreen.classList.add('active');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateStudentBadge() {
+      const badge = document.getElementById('studentBadge');
+      badge.textContent = currentStudent ? `🎯 الطالب: ${currentStudent}` : '🎯 الطالب: لم يبدأ التحدي بعد';
+    }
+
+    function startChallenge() {
+      const input = document.getElementById('studentName');
+      const name = input.value.trim();
+      currentStudent = name || 'طالب متميز';
+      updateStudentBadge();
+      showScreen('screen-linear-info');
+    }
+
+    function fillSlot(num, value) {
+      const slot = document.getElementById('slot' + num);
+      if (!slot) return;
+      slot.textContent = value;
+      slot.classList.add('filled');
+    }
+
+    function handleDropToSlot(slot, item) {
+      if (!slot || !item) return;
+      const sameGroup = item.dataset.group === slot.dataset.group;
+      if (!sameGroup) return;
+
+      const oldValue = slot.dataset.value;
+      if (oldValue) {
+        const escapedValue = typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(oldValue) : oldValue.replace(/"/g, '\\"');
+        const oldItem = document.querySelector(`.drag-item[data-group="${slot.dataset.group}"][data-value="${escapedValue}"]`);
+        if (oldItem) oldItem.classList.remove('used');
+      }
+
+      item.classList.add('used');
+      slot.textContent = item.dataset.value;
+      slot.dataset.value = item.dataset.value;
+      slot.classList.add('filled-slot');
+    }
+
+    function setupDragAndDrop() {
+      document.querySelectorAll('.drag-item').forEach(item => {
+        item.addEventListener('dragstart', event => {
+          if (item.classList.contains('used')) {
+            event.preventDefault();
+            return;
+          }
+          draggedItem = item;
+        });
+
+        item.addEventListener('click', () => {
+          if (item.classList.contains('used')) return;
+          const group = item.dataset.group;
+          const emptySlot = document.querySelector(`.drop-slot[data-group="${group}"]:not(.filled-slot)`);
+          if (!emptySlot) return;
+          handleDropToSlot(emptySlot, item);
+        });
+      });
+
+      document.querySelectorAll('.drop-slot').forEach(slot => {
+        slot.addEventListener('dragover', event => event.preventDefault());
+        slot.addEventListener('drop', event => {
+          event.preventDefault();
+          if (!draggedItem) return;
+          handleDropToSlot(slot, draggedItem);
+          draggedItem = null;
+        });
+      });
+    }
+
+    function checkUnlock1(q, correct) {
+      const fb = document.getElementById('u1f' + q);
+      if (!fb) return;
+      if (correct) {
+        fb.textContent = 'إجابة صحيحة!';
+        fb.className = 'feedback success';
+        setTimeout(() => {
+          document.getElementById('u1q' + q).classList.remove('active');
+          if (q < 3) {
+            document.getElementById('u1q' + (q + 1)).classList.add('active');
+          } else {
+            fillSlot(1, '2');
+            document.getElementById('unlock1-result').style.display = 'block';
+          }
+        }, 700);
+      } else {
+        fb.textContent = 'حاول مرة أخرى، وتأمل شكل المتغيرات جيدًا.';
+        fb.className = 'feedback error';
+      }
+    }
+
+    function checkUnlock2(q, correct) {
+      const fb = document.getElementById('u2f' + q);
+      if (!fb) return;
+      if (correct) {
+        fb.textContent = 'ممتاز!';
+        fb.className = 'feedback success';
+        setTimeout(() => {
+          document.getElementById('u2q' + q).classList.remove('active');
+          if (q < 3) {
+            document.getElementById('u2q' + (q + 1)).classList.add('active');
+          } else {
+            fillSlot(2, '7');
+            document.getElementById('unlock2-result').style.display = 'block';
+          }
+        }, 700);
+      } else {
+        fb.textContent = 'ليست الإجابة الصحيحة. ركز على المعاملات أو صيغة الاستدعاء.';
+        fb.className = 'feedback error';
+      }
+    }
+
+    function checkDragQuestion1() {
+      const slots = document.querySelectorAll('.drop-slot[data-group="q1"]');
+      const ok = Array.from(slots).every(slot => slot.dataset.value === slot.dataset.accept);
+      const fb = document.getElementById('u3f1');
+      if (ok) {
+        fb.textContent = 'أحسنت! اكتمل الكود بشكل صحيح.';
+        fb.className = 'feedback success';
+        setTimeout(() => {
+          document.getElementById('u3q1').classList.remove('active');
+          document.getElementById('u3q2').classList.add('active');
+        }, 700);
+      } else {
+        fb.textContent = 'بعض الأجزاء ليست في المكان الصحيح. حاول مرة أخرى.';
+        fb.className = 'feedback error';
+      }
+    }
+
+    function checkDragQuestion2() {
+      const slots = document.querySelectorAll('.drop-slot[data-group="q2"]');
+      const ok = Array.from(slots).every(slot => slot.dataset.value === slot.dataset.accept);
+      const fb = document.getElementById('u3f2');
+      if (ok) {
+        fb.textContent = 'ممتاز! هذا هو سطر الحل الصحيح.';
+        fb.className = 'feedback success';
+        setTimeout(() => {
+          document.getElementById('u3q2').classList.remove('active');
+          document.getElementById('u3q3').classList.add('active');
+        }, 700);
+      } else {
+        fb.textContent = 'راجع اسم الدالة وترتيب الوسائط.';
+        fb.className = 'feedback error';
+      }
+    }
+
+    function checkMultiErrorQuestion() {
+      const correct = ['err1', 'err2', 'err3'];
+      const wrong = ['err4', 'err5'];
+      const allCorrectChecked = correct.every(id => document.getElementById(id).checked);
+      const noWrongChecked = wrong.every(id => !document.getElementById(id).checked);
+      const fb = document.getElementById('u3f3');
+      if (!fb) return;
+
+      if (allCorrectChecked && noWrongChecked) {
+        fb.textContent = 'رائع جدًا! حددت جميع الأخطاء بشكل صحيح.';
+        fb.className = 'feedback success';
+        setTimeout(() => {
+          fillSlot(3, '3');
+          launchCelebration();
+          saveWinner();
+          document.getElementById('final-result').style.display = 'block';
+        }, 700);
+      } else {
+        fb.textContent = 'ليس بعد. تأكد من تحديد كل الأخطاء الصحيحة فقط.';
+        fb.className = 'feedback error';
+      }
+    }
+
+    function launchCelebration() {
+      const layer = document.getElementById('celebration');
+      if (!layer) return;
+      layer.innerHTML = '';
+      layer.style.display = 'block';
+      const colors = ['#3b82f6', '#06b6d4', '#f59e0b', '#22c55e', '#f97316'];
+      for (let i = 0; i < 120; i += 1) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = (Math.random() * 0.8) + 's';
+        piece.style.transform = `translateY(0) rotate(${Math.random() * 360}deg)`;
+        layer.appendChild(piece);
+      }
+      setTimeout(() => {
+        layer.style.display = 'none';
+        layer.innerHTML = '';
+      }, 4500);
+    }
+
+    function saveWinner() {
+      winners.push({ name: currentStudent || 'طالب متميز' });
+      renderWinners();
+    }
+
+    function renderWinners() {
+      const board = document.getElementById('winnerBoard');
+      if (!board) return;
+      board.innerHTML = '';
+      winners.forEach(winner => {
+        const li = document.createElement('li');
+        li.textContent = `${winner.name} — أنهيت التحدي بنجاح`;
+        board.appendChild(li);
+      });
+      if (winners.length === 0) {
+        board.innerHTML = '<li>بانتظار أول فائز...</li>';
+      }
+    }
+
+    function resetDragGroup(group) {
+      document.querySelectorAll(`.drop-slot[data-group="${group}"]`).forEach(slot => {
+        slot.textContent = 'اسحب هنا';
+        slot.dataset.value = '';
+        slot.classList.remove('filled-slot');
+      });
+      document.querySelectorAll(`.drag-item[data-group="${group}"]`).forEach(item => {
+        item.classList.remove('used');
+      });
+    }
+
+    function restartAll() {
+      document.querySelectorAll('.question-card').forEach(q => q.classList.remove('active'));
+      document.getElementById('u1q1').classList.add('active');
+      document.getElementById('u2q1').classList.add('active');
+      document.getElementById('u3q1').classList.add('active');
+
+      ['u1f1','u1f2','u1f3','u2f1','u2f2','u2f3','u3f1','u3f2','u3f3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = '';
+          el.className = 'feedback';
+        }
+      });
+
+      ['unlock1-result','unlock2-result','final-result'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+
+      [1, 2, 3].forEach(n => {
+        const slot = document.getElementById('slot' + n);
+        if (slot) {
+          slot.textContent = '؟';
+          slot.classList.remove('filled');
+        }
+      });
+
+      ['err1','err2','err3','err4','err5'].forEach(id => {
+        const box = document.getElementById(id);
+        if (box) box.checked = false;
+      });
+
+      resetDragGroup('q1');
+      resetDragGroup('q2');
+
+      const studentInput = document.getElementById('studentName');
+      if (studentInput) studentInput.value = '';
+
+      currentStudent = '';
+      updateStudentBadge();
+      showScreen('screen-home');
+    }
+
+    function runSelfChecks() {
+      console.assert(document.querySelectorAll('.screen').length === 5, 'Expected 5 screens');
+      console.assert(document.getElementById('studentName') !== null, 'studentName input should exist');
+      console.assert(document.querySelectorAll('.drag-item[data-group="q1"]').length >= 5, 'q1 drag items should exist');
+      console.assert(document.querySelectorAll('.drop-slot[data-group="q2"]').length === 2, 'q2 should have 2 drop slots');
+    }
+
+    updateStudentBadge();
+    renderWinners();
+    setupDragAndDrop();
+    runSelfChecks();
+  </script>
+</body>
+</html>
